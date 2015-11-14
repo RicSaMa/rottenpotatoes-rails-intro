@@ -13,16 +13,26 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
     @filter_string = []
+    if params[:ratings]
+      params[:ratings].each do |key, value|
+        @filter_string << key
+      end
+      session[:ratings] = @filter_string
+    elsif session[:ratings]
+      @filter_string = session[:ratings]
+    else
+      @filter_string = []
+    end
     if params[:sort] == "Title"
       @title_class = 'hilite'
-      @movies = Movie.order("title")
+      @movies = Movie.rating_filtered(@filter_string).order("title")
     elsif params[:sort] == "Release"
       @release_class = 'hilite'
-      @movies = Movie.order("release_date")
+      @movies = Movie.rating_filtered(@filter_string).order("release_date")
     else
       @title_class = ''
       @release_class = ''
-      @movies = Movie.all
+      @movies = Movie.rating_filtered(@filter_string)
     end
   end
 
