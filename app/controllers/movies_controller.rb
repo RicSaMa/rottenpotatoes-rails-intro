@@ -11,6 +11,8 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.all_ratings
+    @filter_string = []
     if params[:sort] == "Title"
       @title_class = 'hilite'
       @movies = Movie.order("title")
